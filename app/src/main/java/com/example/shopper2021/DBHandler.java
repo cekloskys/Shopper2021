@@ -96,4 +96,20 @@ public class DBHandler extends SQLiteOpenHelper {
         // close database reference
         db.close();
     }
+
+    /**
+     * This method gets called when the MainActivity is created.
+     * @return Cursor that contains all rows in shoppinglist table.
+     */
+    public Cursor getShoppingLists() {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define select statement
+        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST;
+
+        // execute select statement and return it as a Cursor
+        return db.rawQuery(query, null);
+    }
 }
