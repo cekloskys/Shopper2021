@@ -92,6 +92,15 @@ public class ViewList extends AppCompatActivity {
                 // call method that updates a shopping list item's item_has attribute
                 // to true if it hasn't already been set to true
                 updateItem(id);
+
+                // initialize Intent for ViewItem Activity
+                intent = new Intent(ViewList.this, ViewItem.class);
+
+                // put the database id in the Intent
+                intent.putExtra("_id", id);
+
+                // start the Activity
+                startActivity(intent);
             }
         });
     }
@@ -160,9 +169,14 @@ public class ViewList extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * This method updates a shopping list item's item_has attribute to true if
+     * it hasn't already been set to true.
+     * @param id shopping list item's id
+     */
     public void updateItem(long id) {
 
-        // if shopping list item hasn't been purchased, eg. its item_has isn't true
+        // if shopping list item hasn't been purchased
         if (dbHandler.isItemUnPurchased((int) id) != 0){
             // update its item_has to true
             dbHandler.updateItem((int) id);

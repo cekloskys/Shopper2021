@@ -227,6 +227,12 @@ public class DBHandler extends SQLiteOpenHelper {
         return db.rawQuery(query, null);
     }
 
+    /**
+     * This method gets called when a shopping list item is selected.
+     * @param itemId id of selected shopping list item
+     * @return 1 if the selected shopping list item is
+     * un-purchased, else 0.
+     */
     public int isItemUnPurchased(Integer itemId) {
 
         // get reference to shopper database
@@ -244,6 +250,10 @@ public class DBHandler extends SQLiteOpenHelper {
         return (cursor.getCount());
     }
 
+    /**
+     * This method gets called when an un-purchased shopping list item is selected.
+     * @param itemId id of selected shopping list item
+     */
     public void updateItem(Integer itemId) {
 
         // get reference to shopper database
@@ -259,5 +269,24 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // close database reference
         db.close();
+    }
+
+    /**
+     * This method gets called when the ViewItem Activity is created.
+     * @param itemId shopping list item id
+     * @return Cursor that contains all of the data associated with
+     * the specified shopping list item id
+     */
+    public Cursor getShoppingListItem (Integer itemId) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define select statement
+        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_ID + " = " + itemId;
+
+        // execute select statement and return it as a Cursor
+        return db.rawQuery(query, null);
     }
 }
