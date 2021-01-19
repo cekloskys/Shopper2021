@@ -103,6 +103,9 @@ public class ViewList extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // set the sub-title ViewList activity to the shopping list total cost
+        toolbar.setSubtitle("Total Cost: $" + dbHandler.getShoppingListTotalCost((int) id));
     }
 
     /**
@@ -188,5 +191,20 @@ public class ViewList extends AppCompatActivity {
             shoppingListItemsAdapter.swapCursor(dbHandler.getShoppingListItems((int) id));
             shoppingListItemsAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * This method gets called when the delete button in the Action Bar of the
+     * ViewListActivity gets clicked.  It deletes a row in the
+     * shoppinglistitem and shoppinglist tables.
+     * @param menuItem delete item menu item
+     */
+    public void deleteList(MenuItem menuItem) {
+
+        // delete shopping list from database
+        dbHandler.deleteShoppingList((int) id);
+
+        // display "List Deleted!" Toast
+        Toast.makeText(this, "List Deleted!", Toast.LENGTH_LONG).show();
     }
 }

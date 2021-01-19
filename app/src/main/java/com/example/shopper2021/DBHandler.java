@@ -289,4 +289,95 @@ public class DBHandler extends SQLiteOpenHelper {
         // execute select statement and return it as a Cursor
         return db.rawQuery(query, null);
     }
+
+    /**
+     * This method gets called when the delete button in the Action Bar of the
+     * ViewItem Activity gets clicked.  It deletes a row in the
+     * shoppinglistitem table.
+     * @param itemId id of shopping list item
+     */
+    public void deleteShoppingListItem (Integer itemId){
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define delete statement
+        String query = "DELETE FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_ID + " = " + itemId;
+
+        // execute delete statement
+        db.execSQL(query);
+
+        // close database reference
+        db.close();
+    }
+
+    /**
+     * This method gets called when the delete button in the Action Bar of the
+     * ViewList Activity gets clicked.  It deletes a row in the
+     * shoppinglistitem and shoppinglist tables.
+     * @param listId id of shopping list
+     */
+    public void deleteShoppingList(Integer listId) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define delete statement to delete from shoppinglistitem table
+        String query1 = "DELETE FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId;
+
+        // execute delete statement
+        db.execSQL(query1);
+
+        // define delete statement to delete from shoppinglist table
+        String query2 = "DELETE FROM " + TABLE_SHOPPING_LIST +
+                " WHERE " + COLUMN_LIST_ID + " = " + listId;
+
+        // execute delete statement
+        db.execSQL(query2);
+
+        // close database reference
+        db.close();
+    }
+
+    /**
+     * This method gets called when the ViewList Activity is created.
+     * @param listId shopping list id
+     * @return Shopping list total cost
+     */
+    public String getShoppingListTotalCost(int listId){
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // declare and initialize String that will be returned by method
+        String cost = "";
+
+        // declare a Double that will be used to compute total cost
+        Double totalCost = 0.0;
+
+        // define select statement
+        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId;
+
+        // execute select statement and store its return in a Cursor
+        Cursor c = db.rawQuery(query, null);
+
+        // loop through the rows in the Cursor
+        while (c.moveToNext()) {
+            // add the cost of the current row into the total cost
+            totalCost += (c.getDouble(c.getColumnIndex("price")) *
+                    (c.getInt(c.getColumnIndex("quantity"))));
+        }
+
+        // convert the total cost to a String
+        cost = String.valueOf(totalCost);
+
+        // close database reference
+        db.close();
+
+        // return String
+        return cost;
+    }
 }
