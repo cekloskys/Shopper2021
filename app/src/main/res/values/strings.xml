@@ -6,4 +6,18 @@
     <string name="name">Name</string>
     <string name="store">Store</string>
     <string name="date">Date</string>
+    <string name="title_activity_view_list">View List</string>
+    <string name="action_add_item">Add Item</string>
+    <string name="title_activity_add_item">Add Item</string>
+    <string name="action_view_list">View List</string>
+    <string name="quantity">Quantity</string>
+    <string name="price">Price</string>
+    <string-array name="quantities">
+        <item></item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

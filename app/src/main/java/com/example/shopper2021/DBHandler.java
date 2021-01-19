@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHandler extends SQLiteOpenHelper {
 
     // initialize constants for DB version and name
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "shopper.db";
 
     // initialize constants for shoppinglist table
@@ -18,6 +18,15 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String COLUMN_LIST_NAME = "name";
     private static final String COLUMN_LIST_STORE = "store";
     private static final String COLUMN_LIST_DATE = "date";
+
+    // initialize constants for shoppinglistitem table
+    private static final String TABLE_SHOPPING_LIST_ITEM = "shoppinglistitem";
+    private static final String COLUMN_ITEM_ID = "_id";
+    private static final String COLUMN_ITEM_NAME = "name";
+    private static final String COLUMN_ITEM_PRICE = "price";
+    private static final String COLUMN_ITEM_QUANTITY = "quantity";
+    private static final String COLUMN_ITEM_HAS = "item_has";
+    private static final String COLUMN_ITEM_LIST_ID = "list_id";
 
     /**
      * Initializes a DBHandler.  Creates version of the database.
@@ -48,6 +57,19 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // execute create statement
         db.execSQL(query);
+
+        // define create statement for shoppinglist table
+        String query2 = "CREATE TABLE " + TABLE_SHOPPING_LIST_ITEM + "(" +
+                COLUMN_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_ITEM_NAME + " TEXT, " +
+                COLUMN_ITEM_PRICE + " DECIMAL(10,2), " +
+                COLUMN_ITEM_QUANTITY + " INTEGER, " +
+                COLUMN_ITEM_HAS + " TEXT, " +
+                COLUMN_ITEM_LIST_ID + " INTEGER" +
+                ");";
+
+        // execute create statement
+        db.execSQL(query2);
     }
 
     /**
@@ -64,6 +86,12 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // execute drop statement that drops shoppinglist table
         db.execSQL(query);
+
+        // define drop statement
+        String query2 = "DROP TABLE IF EXISTS " + TABLE_SHOPPING_LIST_ITEM;
+
+        // execute drop statement that drops shoppinglistitem table
+        db.execSQL(query2);
 
         // call method that creates tables
         onCreate(db);
@@ -111,5 +139,72 @@ public class DBHandler extends SQLiteOpenHelper {
 
         // execute select statement and return it as a Cursor
         return db.rawQuery(query, null);
+    }
+
+    /**
+     * This method gets called when the ViewList Activity is created.
+     * @param id shopping list id
+     * @return shopping list name
+     */
+    public String getShoppingListName(int id) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // declare and initialize Sting that will be returned by method
+        String name = "";
+
+        // define select statement
+        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST +
+                " WHERE " + COLUMN_LIST_ID + " = " + id;
+
+        // execute select statement and store it in a Cursor
+        Cursor cursor = db.rawQuery(query, null);
+
+        // move to the first row in the Cursor
+        cursor.moveToFirst();
+
+        // get the String in the name column of the Cursor and check
+        // if it's not null
+        if ((cursor.getString(cursor.getColumnIndex("name")) != null)){
+            name = cursor.getString(cursor.getColumnIndex("name"));
+        }
+
+        // close reference to shopper database
+        db.close();
+
+        // return shopping list name
+        return name;
+    }
+
+    /**
+     * This method gets called when the add button in the Action Bar of the
+     * AddItem Activity gets clicked.  It inserts a new row in the
+     * shoppinglistitem table.
+     * @param name item name
+     * @param price item price
+     * @param quantity item quantity
+     * @param listId id of shopping list to which item is being added
+     */
+    public void addItemToList(String name, Double price, Integer quantity, Integer listId) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // initialize a ContentValues object
+        ContentValues values = new ContentValues();
+
+        // put data into ContentValues object
+        values.put(COLUMN_ITEM_NAME, name);
+        values.put(COLUMN_ITEM_PRICE, price);
+        values.put(COLUMN_ITEM_QUANTITY, quantity);
+        values.put(COLUMN_ITEM_HAS, "false");
+        values.put(COLUMN_ITEM_LIST_ID, listId);
+
+        // insert data in ContentValues object into shoppinglist table
+        db.insert(TABLE_SHOPPING_LIST_ITEM, null, values);
+
+        // close database reference
+        db.close();
     }
 }
