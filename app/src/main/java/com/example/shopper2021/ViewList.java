@@ -12,6 +12,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class ViewList extends AppCompatActivity {
 
@@ -24,6 +27,12 @@ public class ViewList extends AppCompatActivity {
 
     // declare a DBHandler
     DBHandler dbHandler;
+
+    // declare a ShoppingListItems Cursor Adapter
+    ShoppingListItems shoppingListItemsAdapter;
+
+    // declare a ListView
+    ListView itemListView;
 
     /**
      * This method initializes the Action Bar and View of the ViewList Activity.
@@ -59,6 +68,32 @@ public class ViewList extends AppCompatActivity {
 
         // set the Title of the ViewList activity to the shopping list name
         this.setTitle(shoppingListName);
+
+        // initialize ListView
+        itemListView = (ListView) findViewById(R.id.itemsListView);
+
+        // initialize ShoppingListItems CursorAdapter
+        shoppingListItemsAdapter = new ShoppingListItems(this, dbHandler.getShoppingListItems((int) id), 0);
+
+        // set ShoppingListItems CursorAdapter on ListView
+        itemListView.setAdapter(shoppingListItemsAdapter);
+
+        // register an On Item Click Listener on ListView
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * This method gets called when a row in the ListView is clicked.
+             * @param parent itemListView
+             * @param view ViewList Activity view
+             * @param position position of clicked row
+             * @param id database id of clicked row
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // call method that updates a shopping list item's item_has attribute
+                // to true if it hasn't already been set to true
+                updateItem(id);
+            }
+        });
     }
 
     /**
@@ -98,11 +133,11 @@ public class ViewList extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.action_add_item:
-                // initialize an Intent for the AddItem Activity and start it
-                // if the id is for the CreateList Activity
+                // initialize an Intent for the AddItem Activity
                 intent = new Intent(this, AddItem.class);
                 // put the database id in the Intent
                 intent.putExtra("_id", id);
+                // start the Activity
                 startActivity(intent);
                 return true;
             default:
@@ -117,11 +152,27 @@ public class ViewList extends AppCompatActivity {
      */
     public void openAddItem(View view) {
 
-        // initialize an Intent for the AddItem Activity and start it
-        // if the id is for the CreateList Activity
+        // initialize an Intent for the AddItem Activity
         intent = new Intent(this, AddItem.class);
         // put the database id in the Intent
         intent.putExtra("_id", id);
+        // start the Activity
         startActivity(intent);
+    }
+
+    public void updateItem(long id) {
+
+        // if shopping list item hasn't been purchased, eg. its item_has isn't true
+        if (dbHandler.isItemUnPurchased((int) id) != 0){
+            // update its item_has to true
+            dbHandler.updateItem((int) id);
+
+            // display Toast indicating shopping list item has been purchased
+            Toast.makeText(this, "Item purchased!", Toast.LENGTH_LONG).show();
+
+            // refresh shopping list item in the ListView
+            shoppingListItemsAdapter.swapCursor(dbHandler.getShoppingListItems((int) id));
+            shoppingListItemsAdapter.notifyDataSetChanged();
+        }
     }
 }

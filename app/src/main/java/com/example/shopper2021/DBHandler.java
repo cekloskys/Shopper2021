@@ -207,4 +207,57 @@ public class DBHandler extends SQLiteOpenHelper {
         // close database reference
         db.close();
     }
+
+    /**
+     * This method gets called when the ViewList Activity is created.
+     * @param listId shopping list id
+     * @return Cursor that contains all of the items associated with
+     * the specified shopping list id
+     */
+    public Cursor getShoppingListItems(Integer listId) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define select statement
+        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId;
+
+        // execute select statement and return it as a Cursor
+        return db.rawQuery(query, null);
+    }
+
+    public int isItemUnPurchased(Integer itemId) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define select statement
+        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_HAS + " = \"false\" " +
+                " AND " + COLUMN_ITEM_ID + " = " + itemId;
+
+        // execute select statement and store result in a Cursor
+        Cursor cursor = db.rawQuery(query, null);
+
+        // return a count of the rows in the Cursor
+        return (cursor.getCount());
+    }
+
+    public void updateItem(Integer itemId) {
+
+        // get reference to shopper database
+        SQLiteDatabase db = getWritableDatabase();
+
+        // define update statement
+        String query = "UPDATE " + TABLE_SHOPPING_LIST_ITEM + " SET " +
+                COLUMN_ITEM_HAS + " = \"true\" " + " WHERE " +
+                COLUMN_ITEM_ID + " = " + itemId;
+
+        // execute update statement
+        db.execSQL(query);
+
+        // close database reference
+        db.close();
+    }
 }
