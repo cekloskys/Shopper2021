@@ -135,6 +135,14 @@ public class ViewItem extends AppCompatActivity {
                 // start the Activity
                 startActivity(intent);
                 return true;
+            case R.id.action_view_list:
+                // initialize an Intent for the ViewList Activity
+                intent = new Intent(this, ViewList.class);
+                // put the database id in the Intent
+                intent.putExtra("_id", id);
+                // start the Activity
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

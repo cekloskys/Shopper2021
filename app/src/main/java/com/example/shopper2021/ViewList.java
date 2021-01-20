@@ -1,13 +1,16 @@
 package com.example.shopper2021;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +18,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import static com.example.shopper2021.App.CHANNEL_SHOPPER_ID;
 
 public class ViewList extends AppCompatActivity {
 
@@ -33,6 +38,12 @@ public class ViewList extends AppCompatActivity {
 
     // declare a ListView
     ListView itemListView;
+
+    // declare String for name of shopping list
+    String shoppingListName;
+
+    // declare NotificationManagerCompat - used to show notifications
+    NotificationManagerCompat notificationManagerCompat;
 
     /**
      * This method initializes the Action Bar and View of the ViewList Activity.
@@ -64,7 +75,7 @@ public class ViewList extends AppCompatActivity {
         dbHandler = new DBHandler(this, null);
 
         // get shopping list name
-        String shoppingListName = dbHandler.getShoppingListName((int) id);
+        shoppingListName = dbHandler.getShoppingListName((int) id);
 
         // set the Title of the ViewList activity to the shopping list name
         this.setTitle(shoppingListName);
@@ -106,6 +117,9 @@ public class ViewList extends AppCompatActivity {
 
         // set the sub-title ViewList activity to the shopping list total cost
         toolbar.setSubtitle("Total Cost: $" + dbHandler.getShoppingListTotalCost((int) id));
+
+        // initialize NotificationManagerCompat
+        notificationManagerCompat = NotificationManagerCompat.from(this);
     }
 
     /**
@@ -190,6 +204,19 @@ public class ViewList extends AppCompatActivity {
             // refresh shopping list item in the ListView
             shoppingListItemsAdapter.swapCursor(dbHandler.getShoppingListItems((int) id));
             shoppingListItemsAdapter.notifyDataSetChanged();
+        }
+
+        // if all shopping list items have been purchased
+        if (dbHandler.getUnpurchasedItems((int) this.id) == 0){
+
+            // initialize Notification
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_SHOPPER_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Shopper")
+                    .setContentText(shoppingListName + " completed!").build();
+
+            // show Notification
+            notificationManagerCompat.notify(1, notification);
         }
     }
 
