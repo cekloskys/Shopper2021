@@ -110,6 +110,9 @@ public class ViewList extends AppCompatActivity {
                 // put the database id in the Intent
                 intent.putExtra("_id", id);
 
+                // put the database id of the clicked list in the Intent
+                intent.putExtra("_list_id", ViewList.this.id);
+
                 // start the Activity
                 startActivity(intent);
             }
@@ -202,7 +205,7 @@ public class ViewList extends AppCompatActivity {
             Toast.makeText(this, "Item purchased!", Toast.LENGTH_LONG).show();
 
             // refresh shopping list item in the ListView
-            shoppingListItemsAdapter.swapCursor(dbHandler.getShoppingListItems((int) id));
+            shoppingListItemsAdapter.swapCursor(dbHandler.getShoppingListItems((int) this.id));
             shoppingListItemsAdapter.notifyDataSetChanged();
         }
 

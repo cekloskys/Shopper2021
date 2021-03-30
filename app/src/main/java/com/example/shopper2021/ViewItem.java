@@ -21,6 +21,7 @@ public class ViewItem extends AppCompatActivity {
     // declare a Bundle and a long for data passed from ViewList in Bundle
     Bundle bundle;
     long id;
+    long listId;
 
     // declare a DBHandler
     DBHandler dbHandler;
@@ -60,6 +61,9 @@ public class ViewItem extends AppCompatActivity {
 
         // get shopping list id passed in Bundle and store it in long
         id = bundle.getLong("_id");
+
+        // get shopping list id passed in Bundle and store it in long
+        listId = bundle.getLong("_list_id");
 
         // initialize DBHandler
         dbHandler = new DBHandler(this, null);
@@ -139,7 +143,7 @@ public class ViewItem extends AppCompatActivity {
                 // initialize an Intent for the ViewList Activity
                 intent = new Intent(this, ViewList.class);
                 // put the database id in the Intent
-                intent.putExtra("_id", id);
+                intent.putExtra("_id", listId);
                 // start the Activity
                 startActivity(intent);
                 return true;
