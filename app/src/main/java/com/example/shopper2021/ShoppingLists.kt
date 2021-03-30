@@ -1,31 +1,26 @@
-package com.example.shopper2021;
+package com.example.shopper2021
 
-import android.content.Context;
-import android.database.Cursor;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.TextView;
+import android.content.Context
+import android.database.Cursor
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.CursorAdapter
+import android.widget.TextView
 
 /**
  * The ShoppingLists class will map the data selected from the shoppinglist
  * table to the li_shopping_list layout resource.
  */
-public class ShoppingLists extends CursorAdapter {
-
-    /**
-     * Initialize ShoppingLists CursorAdapter.
-     * @param context reference to Activity that initializes the ShoppingLists CursorAdapter
-     * @param c reference to Cursor that contains data from database
-     * @param flags determines special behavior of the CursorAdapter.  Will always be 0
-     *              which means the CursorAdapter shouldn't have any special behavior.
-     */
-    public ShoppingLists(Context context, Cursor c, int flags) {
-        // call superclass constructor
-        super(context, c, flags);
-    }
-
+class ShoppingLists
+/**
+ * Initialize ShoppingLists CursorAdapter.
+ * @param context reference to Activity that initializes the ShoppingLists CursorAdapter
+ * @param c reference to Cursor that contains data from database
+ * @param flags determines special behavior of the CursorAdapter.  Will always be 0
+ * which means the CursorAdapter shouldn't have any special behavior.
+ */
+(context: Context?, c: Cursor?, flags: Int) : CursorAdapter(context, c, flags) {
     /**
      * Make a new View to hold the data in the Cursor.
      * @param context reference to Activity that initializes the ShoppingLists CursorAdapter
@@ -33,9 +28,8 @@ public class ShoppingLists extends CursorAdapter {
      * @param parent reference to shopperListView that will contain the new View
      * @return reference to the new View
      */
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.li_shopping_list, parent, false);
+    override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
+        return LayoutInflater.from(context).inflate(R.layout.li_shopping_list, parent, false)
     }
 
     /**
@@ -45,13 +39,9 @@ public class ShoppingLists extends CursorAdapter {
      * @param context reference to Activity that initializes the ShoppingLists CursorAdapter
      * @param cursor reference to Cursor that contains data from database
      */
-    @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        ((TextView) view.findViewById(R.id.nameTextView)).
-                setText(cursor.getString(cursor.getColumnIndex("name")));
-        ((TextView) view.findViewById(R.id.storeTextView)).
-                setText(cursor.getString(cursor.getColumnIndex("store")));
-        ((TextView) view.findViewById(R.id.dateTextView)).
-                setText(cursor.getString(cursor.getColumnIndex("date")));
+    override fun bindView(view: View, context: Context, cursor: Cursor) {
+        (view.findViewById<View>(R.id.nameTextView) as TextView).text = cursor.getString(cursor.getColumnIndex("name"))
+        (view.findViewById<View>(R.id.storeTextView) as TextView).text = cursor.getString(cursor.getColumnIndex("store"))
+        (view.findViewById<View>(R.id.dateTextView) as TextView).text = cursor.getString(cursor.getColumnIndex("date"))
     }
 }
